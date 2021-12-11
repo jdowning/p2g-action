@@ -1,0 +1,80 @@
+name: Peloton to Garmin
+author: jdowning
+description: Syncs Peloton workouts to Garmin
+branding:
+  icon: rotate-cw
+  color: red
+inputs:
+  peloton_email:
+    description: Peloton Email
+    required: true
+  peloton_password:
+    description: Peloton Password
+    required: true
+  garmin_email:
+    description: Peloton Email
+    required: true
+  garmin_password:
+    description: Garmin Password
+    required: true
+  timezone:
+    description: Timezone used
+    default: US/Pacific
+  workouts_to_dowload:
+    description: How many workouts to download from Peloton
+    default: 10
+  excluded_workouts:
+    description: Array of workouts to exclude from sync
+    default: []
+  enable_fit_format:
+    description: Enable FIT file format
+    default: true
+  enable_json_format:
+    description: Enable JSON file format
+    default: true
+  enable_tcx_format:
+    description: Enable TCX file format
+    default: true
+  include_time_in_hr_zones:
+    description: Include time in heart rate zones
+    default: true
+  include_time_in_power_zones:
+    description: Include time in power zones
+    default: true
+  upload_to_garmin:
+    description: Upload target file to Garmin
+    default: true
+  upload_format:
+    description: File format to upload to Garmin
+    default: fit
+runs:
+  using: composite
+  steps:
+    - run: curl --silent --output configuration.local.json \
+             https://raw.githubusercontent.com/philosowaffle/peloton-to-garmin/master/configuration.example.json
+    - name: populate config
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: configuration.local.json
+      env:
+        Peloton.Email: ${{ secrets.PELOTON_EMAIL }}
+        Peloton.Password: ${{ secrets.PELOTON_PASSWORD }}
+        Garmin.Email: ${{ secrets.GARMIN_EMAIL }}
+        Garmin.Password: ${{ secrets.GARMIN_PASSWORD }}
+        Format.Fit: ${{ inputs.enable_fit_format }}
+        Format.Json: ${{ inputs.enable_json_format }}
+        Format.Tcx: ${{ inputs.enable_tcx_format }}
+        Format.IncludeTimeInHRZones: ${{ inputs.include_time_in_hr_zones}}
+        Format.IncludeTimeInPowerZones: ${{ inputs.include_time_in_power_zones }}
+        Peloton.NumWorkoutsToDownload: $${{ inputs.workouts_to_dowload }}
+        Peloton.ExcludeWorkoutTypes: $${{ inputs.excluded_workouts }}:
+        Garmin.Upload: $${{ inputs.upload_to_garmin }}
+        Garmin.FormatToUpload: $${{ inputs.upload_format }}
+    - run: mkdir -p output && mkdir -p working
+    - run: docker run --init \
+              --volume $(pwd)/configuration.local.json:/app/configuration.local.json \
+              --volume $(pwd)/output:/app/output \
+              --volume $(pwd)/working:/app/working \
+              philosowaffle/peloton-to-garmin
+      env:
+        TZ: $${{ inputs.timezone }}
