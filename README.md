@@ -27,3 +27,53 @@ jobs:
           garmin_email: ${{ secrets.GARMIN_EMAIL }}
           garmin_password: ${{ secrets.GARMIN_PASSWORD }}
 ```
+
+## Configuration
+
+This action accepts the following inputs:
+
+```
+inputs:
+  peloton_email:
+    description: Peloton Email
+    required: true
+  peloton_password:
+    description: Peloton Password
+    required: true
+  garmin_email:
+    description: Garmin Email
+    required: true
+  garmin_password:
+    description: Garmin Password
+    required: true
+  timezone:
+    description: Timezone used
+    default: US/Pacific
+  workouts_to_dowload:
+    description: How many workouts to download from Peloton
+    default: 10
+  excluded_workouts:
+    description: Array of workouts to exclude from sync
+    default: []
+  enable_fit_format:
+    description: Enable FIT file format
+    default: true
+  enable_json_format:
+    description: Enable JSON file format
+    default: true
+  enable_tcx_format:
+    description: Enable TCX file format
+    default: true
+  include_time_in_hr_zones:
+    description: Include time in heart rate zones
+    default: true
+  include_time_in_power_zones:
+    description: Include time in power zones
+    default: true
+  upload_to_garmin:
+    description: Upload target file to Garmin
+    default: true
+  upload_format:
+    description: File format to upload to Garmin
+    default: fit
+```
