@@ -47,11 +47,18 @@ inputs:
   upload_format:
     description: File format to upload to Garmin
     default: fit
+  device_info_url:
+    description: location of custom Garmin device info
+    default: https://gist.githubusercontent.com/jdowning/457eee9c797083043358c8e5cb523c02/raw/337f695fb293cb7247fb3f234524117c46dd2e5b/venu.xml
 runs:
   using: composite
   steps:
     - name: download configuration
       run: curl --silent --output configuration.local.json https://raw.githubusercontent.com/philosowaffle/peloton-to-garmin/master/configuration.example.json
+    - name: download device info
+      run: curl --silent --output deviceInfo.xml $DEVICE_INFO_URL
+      env:
+        DEVICE_INFO_URL: $${{ inputs.device_info_url }}
     - name: populate config
       uses: microsoft/variable-substitution@v1
       with:
@@ -73,4 +80,4 @@ runs:
     - name: setup dirs
       run: mkdir -p output && mkdir -p working
     - name: run p2g
-      run: docker run --init --volume $(pwd)/configuration.local.json:/app/configuration.local.json --volume $(pwd)/output:/app/output --volume $(pwd)/working:/app/working --env "TZ=$${{ inputs.timezone }}" philosowaffle/peloton-to-garmin
+      run: docker run --init --volume $(pwd)/configuration.local.json:/app/configuration.local.json --volume $(pwd)/output:/app/output --volume $(pwd)/working:/app/working --volume $(pwd)/deviceInfo.xml:/app/deviceInfo.xml --env "TZ=$${{ inputs.timezone }}" philosowaffle/peloton-to-garmin
