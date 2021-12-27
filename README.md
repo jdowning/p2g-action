@@ -20,7 +20,7 @@ jobs:
     name: Sync Peloton to Garmin
     runs-on: ubuntu-latest
     steps:
-      - uses: jdowning/p2g-action
+      - uses: jdowning/p2g-action@1.0.0
         with:
           peloton_email: ${{ secrets.PELOTON_EMAIL }}
           peloton_password: ${{ secrets.PELOTON_PASSWORD }}
