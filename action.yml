@@ -54,9 +54,9 @@ runs:
       run: curl --silent --output configuration.local.json https://raw.githubusercontent.com/philosowaffle/peloton-to-garmin/master/configuration.example.json
       shell: bash
     - name: download device info
-      run: curl --silent --output deviceInfo.xml $DEVICE_INFO_URL
+      run: curl --silent --output deviceInfo.xml $INPUT_DEVICE_INFO_URL
       shell: bash
-      env:
+      with:
         DEVICE_INFO_URL: $${{ inputs.device_info_url }}
     - name: populate config
       uses: microsoft/variable-substitution@v1
