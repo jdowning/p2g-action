@@ -55,8 +55,10 @@ runs:
   steps:
     - name: download configuration
       run: curl --silent --output configuration.local.json https://raw.githubusercontent.com/philosowaffle/peloton-to-garmin/master/configuration.example.json
+      shell: bash
     - name: download device info
       run: curl --silent --output deviceInfo.xml $DEVICE_INFO_URL
+      shell: bash
       env:
         DEVICE_INFO_URL: $${{ inputs.device_info_url }}
     - name: populate config
@@ -79,5 +81,7 @@ runs:
         Garmin.FormatToUpload: $${{ inputs.upload_format }}
     - name: setup dirs
       run: mkdir -p output && mkdir -p working
+      shell: bash
     - name: run p2g
       run: docker run --init --volume $(pwd)/configuration.local.json:/app/configuration.local.json --volume $(pwd)/output:/app/output --volume $(pwd)/working:/app/working --volume $(pwd)/deviceInfo.xml:/app/deviceInfo.xml --env "TZ=$${{ inputs.timezone }}" philosowaffle/peloton-to-garmin
+      shell: bash
