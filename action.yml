@@ -76,6 +76,7 @@ runs:
         Peloton.NumWorkoutsToDownload: ${{ inputs.workouts_to_dowload }}
         Garmin.Upload: ${{ inputs.upload_to_garmin }}
         Garmin.FormatToUpload: ${{ inputs.upload_format }}
+        App.EnablePolling: false
     - name: setup dirs
       run: mkdir -p output && mkdir -p working
       shell: bash
