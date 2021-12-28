@@ -63,10 +63,10 @@ runs:
       with:
         files: configuration.local.json
       env:
-        Peloton.Email: ${{ secrets.PELOTON_EMAIL }}
-        Peloton.Password: ${{ secrets.PELOTON_PASSWORD }}
-        Garmin.Email: ${{ secrets.GARMIN_EMAIL }}
-        Garmin.Password: ${{ secrets.GARMIN_PASSWORD }}
+        Peloton.Email: ${{ inputs.PELOTON_EMAIL }}
+        Peloton.Password: ${{ inputs.PELOTON_PASSWORD }}
+        Garmin.Email: ${{ inputs.GARMIN_EMAIL }}
+        Garmin.Password: ${{ inputs.GARMIN_PASSWORD }}
         Format.Fit: ${{ inputs.enable_fit_format }}
         Format.Json: ${{ inputs.enable_json_format }}
         Format.Tcx: ${{ inputs.enable_tcx_format }}
