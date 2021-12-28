@@ -44,6 +44,9 @@ inputs:
   upload_format:
     description: File format to upload to Garmin
     default: fit
+  configuration_url:
+    description: location of custom p2g configuration
+    default: https://raw.githubusercontent.com/philosowaffle/peloton-to-garmin/master/configuration.example.json
   device_info_url:
     description: location of custom Garmin device info
     default: https://gist.githubusercontent.com/jdowning/457eee9c797083043358c8e5cb523c02/raw/337f695fb293cb7247fb3f234524117c46dd2e5b/venu.xml
@@ -51,13 +54,11 @@ runs:
   using: composite
   steps:
     - name: download configuration
-      run: curl --silent --output configuration.local.json https://raw.githubusercontent.com/philosowaffle/peloton-to-garmin/master/configuration.example.json
+      run: curl --silent --output configuration.local.json ${{ inputs.configuration_url }}
       shell: bash
     - name: download device info
-      run: curl --silent --output deviceInfo.xml "$DEVICE_INFO_URL"
+      run: curl --silent --output deviceInfo.xml ${{ inputs.device_info_url }}
       shell: bash
-      env:
-        DEVICE_INFO_URL: $${{ inputs.device_info_url }}
     - name: populate config
       uses: microsoft/variable-substitution@v1
       with:

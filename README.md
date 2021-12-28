@@ -73,4 +73,10 @@ inputs:
   upload_format:
     description: File format to upload to Garmin
     default: fit
+  configuration_url:
+    description: location of custom p2g configuration
+    default: https://raw.githubusercontent.com/philosowaffle/peloton-to-garmin/master/configuration.example.json
+  device_info_url:
+    description: location of custom Garmin device info
+    default: https://gist.githubusercontent.com/jdowning/457eee9c797083043358c8e5cb523c02/raw/337f695fb293cb7247fb3f234524117c46dd2e5b/venu.xml
 ```
