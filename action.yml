@@ -23,9 +23,6 @@ inputs:
   workouts_to_dowload:
     description: How many workouts to download from Peloton
     default: 10
-  excluded_workouts:
-    description: Array of workouts to exclude from sync
-    default: []
   enable_fit_format:
     description: Enable FIT file format
     default: true
@@ -76,7 +73,6 @@ runs:
         Format.IncludeTimeInHRZones: ${{ inputs.include_time_in_hr_zones}}
         Format.IncludeTimeInPowerZones: ${{ inputs.include_time_in_power_zones }}
         Peloton.NumWorkoutsToDownload: $${{ inputs.workouts_to_dowload }}
-        Peloton.ExcludeWorkoutTypes: $${{ inputs.excluded_workouts }}
         Garmin.Upload: $${{ inputs.upload_to_garmin }}
         Garmin.FormatToUpload: $${{ inputs.upload_format }}
     - name: setup dirs

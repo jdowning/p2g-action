@@ -52,9 +52,6 @@ inputs:
   workouts_to_dowload:
     description: How many workouts to download from Peloton
     default: 10
-  excluded_workouts:
-    description: Array of workouts to exclude from sync
-    default: []
   enable_fit_format:
     description: Enable FIT file format
     default: true
