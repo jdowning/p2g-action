@@ -17,6 +17,9 @@ inputs:
   garmin_password:
     description: Garmin Password
     required: true
+  docker_tag:
+    description: Docker Hub tag
+    default: stable
   timezone:
     description: Timezone used
     default: US/Pacific
@@ -81,5 +84,5 @@ runs:
       run: mkdir -p output && mkdir -p working
       shell: bash
     - name: run p2g
-      run: docker run --init --volume $(pwd)/configuration.local.json:/app/configuration.local.json --volume $(pwd)/output:/app/output --volume $(pwd)/working:/app/working --volume $(pwd)/deviceInfo.xml:/app/deviceInfo.xml --env "TZ=${{ inputs.timezone }}" philosowaffle/peloton-to-garmin
+      run: docker run --init --volume $(pwd)/configuration.local.json:/app/configuration.local.json --volume $(pwd)/output:/app/output --volume $(pwd)/working:/app/working --volume $(pwd)/deviceInfo.xml:/app/deviceInfo.xml --env "TZ=${{ inputs.timezone }}" philosowaffle/peloton-to-garmin:${{ inputs:docker_tag }}
       shell: bash
