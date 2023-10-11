@@ -78,5 +78,5 @@ runs:
       run: mkdir -p output && mkdir -p working
       shell: bash
     - name: run p2g
-      run: docker run --init --volume $(pwd)/configuration.local.json:/app/configuration.local.json --volume $(pwd)/output:/app/output --volume $(pwd)/working:/app/working --env "TZ=${{ inputs.timezone }}" philosowaffle/peloton-to-garmin:${{ inputs:docker_tag }}
+      run: docker run --init --volume $(pwd)/configuration.local.json:/app/configuration.local.json --volume $(pwd)/output:/app/output --volume $(pwd)/working:/app/working --env "TZ=${{ inputs.timezone }}" philosowaffle/peloton-to-garmin:${{ inputs.docker_tag }}
       shell: bash
