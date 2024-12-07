@@ -19,11 +19,11 @@ inputs:
     required: true
   docker_tag:
     description: Docker Hub tag
-    default: stable
+    default: console-stable
   timezone:
     description: Timezone used
     default: US/Pacific
-  workouts_to_dowload:
+  workouts_to_download:
     description: How many workouts to download from Peloton
     default: 10
   enable_fit_format:
@@ -47,36 +47,61 @@ inputs:
   upload_format:
     description: File format to upload to Garmin
     default: fit
-  configuration_url:
-    description: location of custom p2g configuration
-    default: https://raw.githubusercontent.com/philosowaffle/peloton-to-garmin/master/configuration.example.json
 runs:
   using: composite
   steps:
-    - name: download configuration
-      run: curl --silent --output configuration.local.json ${{ inputs.configuration_url }}
-      shell: bash
-    - name: populate config
-      uses: microsoft/variable-substitution@v1
-      with:
-        files: configuration.local.json
-      env:
-        Peloton.Email: ${{ inputs.PELOTON_EMAIL }}
-        Peloton.Password: ${{ inputs.PELOTON_PASSWORD }}
-        Garmin.Email: ${{ inputs.GARMIN_EMAIL }}
-        Garmin.Password: ${{ inputs.GARMIN_PASSWORD }}
-        Format.Fit: ${{ inputs.enable_fit_format }}
-        Format.Json: ${{ inputs.enable_json_format }}
-        Format.Tcx: ${{ inputs.enable_tcx_format }}
-        Format.IncludeTimeInHRZones: ${{ inputs.include_time_in_hr_zones}}
-        Format.IncludeTimeInPowerZones: ${{ inputs.include_time_in_power_zones }}
-        Peloton.NumWorkoutsToDownload: ${{ inputs.workouts_to_dowload }}
-        Garmin.Upload: ${{ inputs.upload_to_garmin }}
-        Garmin.FormatToUpload: ${{ inputs.upload_format }}
-        App.EnablePolling: false
     - name: setup dirs
+      shell: bash
       run: mkdir -p output && mkdir -p working
+    - name: populate config
       shell: bash
+      run: |
+        cat <<EOT > configuration.local.json 
+        {
+          "App": {
+            "EnablePolling": false
+          },
+          "Format": {
+            "Fit": ${{ inputs.enable_fit_format }},
+            "Json": ${{ inputs.enable_json_format }},
+            "Tcx": ${{ inputs.enable_tcx_format }},
+            "SaveLocalCopy": false,
+            "IncludeTimeInHRZones": ${{ inputs.include_time_in_hr_zones }},
+            "IncludeTimeInPowerZones": ${{ inputs.include_time_in_power_zones }}
+          },
+          "Peloton": {
+            "NumWorkoutsToDownload": ${{ inputs.workouts_to_download }}
+          },
+          "Garmin": {
+            "Upload": ${{ inputs.upload_to_garmin }},
+            "FormatToUpload": "${{ inputs.upload_format }}"
+          },
+          "Observability": {
+            "Prometheus": {
+              "Enabled": false
+            },
+            "Jaeger": {
+              "Enabled": false
+            },
+            "Serilog": {
+              "Using": [ "Serilog.Sinks.Console"],
+              "MinimumLevel": "Information"
+            }
+          }
+        }
+        EOT
     - name: run p2g
-      run: docker run --init --volume $(pwd)/configuration.local.json:/app/configuration.local.json --volume $(pwd)/output:/app/output --volume $(pwd)/working:/app/working --env "TZ=${{ inputs.timezone }}" philosowaffle/peloton-to-garmin:${{ inputs.docker_tag }}
       shell: bash
+      run: |
+        cat configuration.local.json &&
+        docker run --init \
+          --volume $(pwd)/configuration.local.json:/app/configuration.local.json \
+          --volume $(pwd)/output:/app/output \
+          --volume $(pwd)/working:/app/working \
+          --env "TZ=${{ inputs.timezone }}" \
+          --env "P2G_DEVELOPER__USERAGENT=GCM-iOS-5.7.2.1" \
+          --env "P2G_PELOTON__EMAIL=${{ inputs.PELOTON_EMAIL }}" \
+          --env "P2G_PELOTON__PASSWORD=${{ inputs.PELOTON_PASSWORD }}" \
+          --env "P2G_GARMIN__EMAIL=${{ inputs.GARMIN_EMAIL }}" \
+          --env "P2G_GARMIN__PASSWORD=${{ inputs.GARMIN_PASSWORD }}" \
+          philosowaffle/peloton-to-garmin:${{ inputs.docker_tag }}

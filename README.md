@@ -55,7 +55,7 @@ inputs:
   timezone:
     description: Timezone used
     default: US/Pacific
-  workouts_to_dowload:
+  workouts_to_download:
     description: How many workouts to download from Peloton
     default: 10
   enable_fit_format:
@@ -79,7 +79,4 @@ inputs:
   upload_format:
     description: File format to upload to Garmin
     default: fit
-  configuration_url:
-    description: location of custom p2g configuration
-    default: https://raw.githubusercontent.com/philosowaffle/peloton-to-garmin/master/configuration.example.json
 ```
