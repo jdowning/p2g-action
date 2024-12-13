@@ -47,6 +47,9 @@ inputs:
   upload_format:
     description: File format to upload to Garmin
     default: fit
+  log_level:
+    description: Console log level
+    default: Information
 runs:
   using: composite
   steps:
@@ -85,7 +88,9 @@ runs:
             },
             "Serilog": {
               "Using": [ "Serilog.Sinks.Console"],
-              "MinimumLevel": "Information"
+              "MinimumLevel": {
+                "Default": "${{ inputs.log_level }}"
+              }
             }
           }
         }
