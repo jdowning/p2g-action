@@ -5,49 +5,49 @@ branding:
   icon: rotate-cw
   color: red
 inputs:
-  peloton_email:
+  PELOTON_EMAIL:
     description: Peloton Email
     required: true
-  peloton_password:
+  PELOTON_PASSWORD:
     description: Peloton Password
     required: true
-  garmin_email:
+  GARMIN_EMAIL:
     description: Garmin Email
     required: true
-  garmin_password:
+  GARMIN_PASSWORD:
     description: Garmin Password
     required: true
-  docker_tag:
+  DOCKER_TAG:
     description: Docker Hub tag
     default: console-stable
-  timezone:
+  TIMEZONE:
     description: Timezone used
     default: US/Pacific
-  workouts_to_download:
+  WORKOUTS_TO_DOWNLOAD:
     description: How many workouts to download from Peloton
     default: 10
-  enable_fit_format:
+  ENABLE_FIT_FORMAT:
     description: Enable FIT file format
     default: true
-  enable_json_format:
+  ENABLE_JSON_FORMAT:
     description: Enable JSON file format
     default: true
-  enable_tcx_format:
+  ENABLE_TCX_FORMAT:
     description: Enable TCX file format
     default: true
-  include_time_in_hr_zones:
+  INCLUDE_TIME_IN_HR_ZONES:
     description: Include time in heart rate zones
     default: true
-  include_time_in_power_zones:
+  INCLUDE_TIME_IN_POWER_ZONES:
     description: Include time in power zones
     default: true
-  upload_to_garmin:
+  UPLOAD_TO_GARMIN:
     description: Upload target file to Garmin
     default: true
-  upload_format:
+  UPLOAD_FORMAT:
     description: File format to upload to Garmin
     default: fit
-  log_level:
+  LOG_LEVEL:
     description: Console log level
     default: Information
 runs:
@@ -65,19 +65,19 @@ runs:
             "EnablePolling": false
           },
           "Format": {
-            "Fit": ${{ inputs.enable_fit_format }},
-            "Json": ${{ inputs.enable_json_format }},
-            "Tcx": ${{ inputs.enable_tcx_format }},
+            "Fit": ${{ inputs.ENABLE_FIT_FORMAT }},
+            "Json": ${{ inputs.ENABLE_JSON_FORMAT }},
+            "Tcx": ${{ inputs.ENABLE_TCX_FORMAT }},
             "SaveLocalCopy": false,
-            "IncludeTimeInHRZones": ${{ inputs.include_time_in_hr_zones }},
-            "IncludeTimeInPowerZones": ${{ inputs.include_time_in_power_zones }}
+            "IncludeTimeInHRZones": ${{ inputs.INCLUDE_TIME_IN_HR_ZONES }},
+            "IncludeTimeInPowerZones": ${{ inputs.INCLUDE_TIME_IN_POWER_ZONES }}
           },
           "Peloton": {
-            "NumWorkoutsToDownload": ${{ inputs.workouts_to_download }}
+            "NumWorkoutsToDownload": ${{ inputs.WORKOUTS_TO_DOWNLOAD }}
           },
           "Garmin": {
-            "Upload": ${{ inputs.upload_to_garmin }},
-            "FormatToUpload": "${{ inputs.upload_format }}"
+            "Upload": ${{ inputs.UPLOAD_TO_GARMIN }},
+            "FormatToUpload": "${{ inputs.UPLOAD_FORMAT }}"
           },
           "Observability": {
             "Prometheus": {
@@ -89,7 +89,7 @@ runs:
             "Serilog": {
               "Using": [ "Serilog.Sinks.Console"],
               "MinimumLevel": {
-                "Default": "${{ inputs.log_level }}"
+                "Default": "${{ inputs.LOG_LEVEL }}"
               }
             }
           }
@@ -103,7 +103,7 @@ runs:
           --volume $(pwd)/configuration.local.json:/app/configuration.local.json \
           --volume $(pwd)/output:/app/output \
           --volume $(pwd)/working:/app/working \
-          --env "TZ=${{ inputs.timezone }}" \
+          --env "TZ=${{ inputs.TIMEZONE }}" \
           --env "P2G_DEVELOPER__USERAGENT=GCM-iOS-5.7.2.1" \
           --env "P2G_PELOTON__EMAIL=${{ inputs.PELOTON_EMAIL }}" \
           --env "P2G_PELOTON__PASSWORD=${{ inputs.PELOTON_PASSWORD }}" \
