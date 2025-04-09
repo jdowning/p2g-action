@@ -55,7 +55,7 @@ runs:
   steps:
     - name: setup dirs
       shell: bash
-      run: mkdir -p output && mkdir -p working
+      run: mkdir -p output
     - name: populate config
       shell: bash
       run: |
@@ -102,7 +102,6 @@ runs:
         docker run --init \
           --volume $(pwd)/configuration.local.json:/app/configuration.local.json \
           --volume $(pwd)/output:/app/output \
-          --volume $(pwd)/working:/app/working \
           --env "TZ=${{ inputs.TIMEZONE }}" \
           --env "P2G_DEVELOPER__USERAGENT=GCM-iOS-5.7.2.1" \
           --env "P2G_PELOTON__EMAIL=${{ inputs.PELOTON_EMAIL }}" \
